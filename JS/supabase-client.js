@@ -1,3 +1,3 @@
-// Initialise the Supabase client. Requires config.js to be loaded first.
-// The global `supabase` object comes from the Supabase CDN script in HTML.
-const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// Initialise the Supabase client as a true global so all scripts can access it.
+// Requires config.js (SUPABASE_URL, SUPABASE_ANON_KEY) and the Supabase CDN to load first.
+window.db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
