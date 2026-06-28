@@ -1,0 +1,470 @@
+/*
+ * css/components.css
+ * ─────────────────────────────────────────────────────────────
+ * REUSABLE COMPONENTS — self-contained UI pieces used in many places.
+ *
+ * WHAT COUNTS AS A COMPONENT?
+ *   A component is a chunk of UI that could appear anywhere on the site
+ *   without depending on its surroundings. Examples:
+ *     .btn        → buttons used in nav, hero, cards, sidebar
+ *     .drama-card → a single drama tile in any grid
+ *     .widget     → sidebar panel box
+ *     .genre-tag  → a clickable genre pill
+ *
+ * NAMING CONVENTION (BEM-inspired):
+ *   .block            → the component itself    (.drama-card)
+ *   .block-element    → a part of it            (.drama-card-title)
+ *   .block--modifier  → a variant               (.btn--primary)
+ * ─────────────────────────────────────────────────────────────
+ */
+
+
+/* ════════════════════════════════════════════════════════════
+   BUTTONS
+   Usage: <a class="btn btn-primary">Click me</a>
+   ════════════════════════════════════════════════════════════ */
+
+/*
+ * .btn — base styles shared by ALL button variants.
+ * Specific variants (.btn-primary, .btn-ghost…) add on top of this.
+ */
+.btn {
+  display: inline-block;
+  padding: 0.4rem 1rem;
+  border-radius: var(--radius-pill);   /* fully rounded edges */
+  font-size: 0.8125rem;                /* 13px */
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: opacity 0.15s, background 0.15s;  /* smooth hover */
+  border: none;
+  line-height: 1.4;
+}
+
+.btn:hover { opacity: 0.85; }
+
+/* Red filled button — primary call to action */
+.btn-primary {
+  background: var(--red);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: var(--red-dark);
+  opacity: 1;
+}
+
+/* Outlined button — secondary action */
+.btn-ghost {
+  background: transparent;
+  border: 1.5px solid var(--border);
+  color: var(--ink-2);
+}
+
+.btn-ghost:hover {
+  background: var(--surface-2);
+  opacity: 1;
+}
+
+/* Light outline — used on dark hero backgrounds */
+.btn-outline-light {
+  background: transparent;
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+}
+
+/* Larger button variant — for hero CTAs */
+.btn-lg {
+  font-size: 0.9rem;
+  padding: 0.55rem 1.5rem;
+}
+
+/* Full-width button — fills its container */
+.btn-block {
+  display: block;
+  text-align: center;
+  width: 100%;
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   DRAMA CARD
+   Usage: injected by js/dramas.js into .drama-grid containers
+   ════════════════════════════════════════════════════════════ */
+
+/* The card wrapper — a link that looks like a tile */
+.drama-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  overflow: hidden;            /* clips the poster image to the rounded corners */
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+/* Lift effect on hover */
+.drama-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-card);
+}
+
+/* ── Poster area ── */
+
+/* Maintains a 2:3 aspect ratio (portrait poster shape) regardless of width */
+.drama-card-poster {
+  aspect-ratio: 2 / 3;
+  background: var(--surface-2);
+  position: relative;     /* needed so badges/score can be positioned inside */
+  overflow: hidden;
+}
+
+.drama-card-poster img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;      /* fills the space without distorting the image */
+  display: block;
+}
+
+/*
+ * Placeholder shown when no poster image is available.
+ * Displays a large Chinese character centred in the space.
+ */
+.drama-card-poster-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 3rem;
+  color: var(--border);
+  background: linear-gradient(135deg, var(--surface-2), var(--surface-1));
+}
+
+/* ── Badges (overlaid on the poster) ── */
+
+/* Base badge — positioned in the top-left corner of the poster */
+.drama-card-badge {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  padding: 0.2rem 0.45rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.6875rem;     /* 11px */
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.badge-airing    { background: var(--red); color: #fff; }
+.badge-completed { background: rgba(0, 0, 0, 0.55); color: #fff; }
+
+/* Score badge — bottom-right corner, gold text on dark pill */
+.drama-card-score {
+  position: absolute;
+  bottom: 0.5rem;
+  right: 0.5rem;
+  background: rgba(0, 0, 0, 0.7);
+  color: var(--gold);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.2rem 0.4rem;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+/* ── Card text info ── */
+
+.drama-card-info {
+  padding: 0.625rem 0.75rem 0.75rem;
+}
+
+.drama-card-title {
+  font-weight: 600;
+  font-size: 0.875rem;
+  line-height: 1.3;
+  margin-bottom: 0.2rem;
+  /* Clamp long titles to 2 lines */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.drama-card-meta {
+  font-size: 0.75rem;
+  color: var(--ink-3);
+}
+
+/* ── Card action buttons (Watch / Done) ── */
+
+.drama-card-actions {
+  display: flex;
+  gap: var(--gap-sm);
+  margin-top: var(--gap-sm);
+}
+
+/* Small inline action button inside each card */
+.action-btn {
+  flex: 1;
+  padding: 0.3rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: var(--ink-2);
+  cursor: pointer;
+  text-align: center;
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
+}
+
+.action-btn:hover { background: var(--surface-1); }
+
+/* State: user is currently watching */
+.action-btn.watching {
+  background: var(--red-bg);
+  border-color: var(--red);
+  color: var(--red);
+}
+
+/* State: user has finished the drama */
+.action-btn.completed {
+  background: #eef7ee;
+  border-color: #5a9c5a;
+  color: #3d7a3d;
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   SIDEBAR WIDGET
+   A bordered box that wraps sidebar content sections
+   ════════════════════════════════════════════════════════════ */
+
+.widget {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.125rem;
+}
+
+/* The bold header line at the top of each widget */
+.widget-title {
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 0.875rem;
+  padding-bottom: 0.625rem;
+  border-bottom: 1px solid var(--border);  /* dividing line below title */
+}
+
+/* Space above the footer area (e.g. the "Open My List" button) */
+.widget-footer {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   MY LIST STATUS ROWS
+   Inside the "My List" sidebar widget
+   ════════════════════════════════════════════════════════════ */
+
+.list-status-rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+}
+
+.list-status-row {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.5rem 0.625rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.list-status-row:hover { background: var(--surface-1); }
+
+/* The coloured dot that identifies each status category */
+.list-status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;       /* prevents the dot from being squished */
+}
+
+.list-status-label {
+  flex: 1;              /* takes up all remaining horizontal space */
+  font-size: 0.875rem;
+  color: var(--ink-2);
+}
+
+.list-status-count {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--ink-3);
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   SEASON BAR CHART
+   Horizontal score bars in the "Top Picks" widget
+   ════════════════════════════════════════════════════════════ */
+
+.season-bar-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.season-bar-row { display: flex; flex-direction: column; gap: 0.3rem; }
+
+.season-bar-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+}
+
+.season-bar-name  { color: var(--ink-2); font-weight: 500; }
+.season-bar-score { color: var(--gold);  font-weight: 600; }
+
+/* The grey track — the full-width background of the bar */
+.season-bar-track {
+  height: 5px;
+  background: var(--surface-2);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+/* The red fill — width is set dynamically by js/ui.js based on the score */
+.season-bar-fill {
+  height: 100%;
+  background: var(--red);
+  border-radius: 3px;
+  transition: width 0.5s ease;  /* animates when the bar first renders */
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   GENRE TAGS
+   Clickable pills in the "Browse by Genre" widget
+   ════════════════════════════════════════════════════════════ */
+
+.genre-cloud {
+  display: flex;
+  flex-wrap: wrap;      /* wraps to a new line when tags don't fit */
+  gap: 0.4rem;
+}
+
+.genre-tag {
+  padding: 0.3rem 0.65rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
+  border: 1px solid var(--border);
+  color: var(--ink-2);
+  background: var(--surface);
+}
+
+/* Active/hovered state — red tint */
+.genre-tag:hover,
+.genre-tag.active {
+  background: var(--red-bg);
+  border-color: var(--red);
+  color: var(--red);
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   COMMUNITY ACTIVITY FEED
+   ════════════════════════════════════════════════════════════ */
+
+.activity-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.activity-item {
+  display: flex;
+  gap: 0.625rem;
+  padding: 0.625rem 0;
+  border-bottom: 1px solid var(--border);
+  align-items: flex-start;
+}
+
+.activity-item:last-child { border-bottom: none; }
+
+/* Circular avatar with user initials */
+.activity-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--red-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--red);
+  flex-shrink: 0;
+}
+
+.activity-text {
+  flex: 1;
+  font-size: 0.8125rem;
+  color: var(--ink-2);
+  line-height: 1.4;
+}
+
+.activity-text strong { color: var(--ink); font-weight: 600; }
+
+.activity-time {
+  font-size: 0.7rem;
+  color: var(--ink-3);
+  margin-top: 0.2rem;
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   FILTER TABS
+   The genre tab row above the airing drama grid
+   ════════════════════════════════════════════════════════════ */
+
+.filter-tabs {
+  display: flex;
+  gap: 0.25rem;
+  margin-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.filter-tab {
+  padding: 0.5rem 1rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--ink-3);
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  /* The underline indicator sits on the border-bottom of the tab row */
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;  /* overlaps the tab row's own border */
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.filter-tab:hover,
+.filter-tab.active {
+  color: var(--red);
+  border-bottom-color: var(--red);
+}

@@ -1,0 +1,86 @@
+/*
+ * css/variables.css
+ * ─────────────────────────────────────────────────────────────
+ * DESIGN TOKENS — the single source of truth for all colours,
+ * fonts, sizes, and spacing used across the site.
+ *
+ * WHY THIS FILE EXISTS:
+ *   Instead of hardcoding "#c0392b" in 20 different places,
+ *   we define it ONCE here as --red, then use var(--red) everywhere.
+ *   If the brand colour ever changes, you update one line here
+ *   and the whole site updates automatically.
+ *
+ * HOW CSS VARIABLES WORK:
+ *   1. Declare them inside :root { } — this makes them available
+ *      globally (on every element in the page).
+ *   2. Use them anywhere with: var(--variable-name)
+ * ─────────────────────────────────────────────────────────────
+ */
+
+:root {
+
+  /* ── COLOUR PALETTE ──────────────────────────────────────── */
+
+  /* Primary brand colour — a deep red, used for CTAs, active states, scores */
+  --red:        #c0392b;
+  --red-dark:   #962d22;   /* darker shade for hover states */
+  --red-bg:     #fdf0ef;   /* very light red, used for badge/tag backgrounds */
+
+  /* Accent gold — used for star ratings and highlighted numbers */
+  --gold:       #b8860b;
+  --gold-bg:    #fdf8ec;
+
+  /* Neutral ink (text) colours — from darkest to lightest */
+  --ink:        #1a1a1a;   /* primary text — almost black */
+  --ink-2:      #444444;   /* secondary text — dark grey */
+  --ink-3:      #888888;   /* muted/hint text — medium grey */
+
+  /* Surface (background) colours — from lightest to slightly tinted */
+  --surface:    #ffffff;   /* pure white — cards, panels */
+  --surface-1:  #f7f5f2;  /* off-white — page background */
+  --surface-2:  #f0ede8;  /* warm grey — poster placeholders, hover fills */
+
+  /* Border colour — a subtle warm grey line */
+  --border:     #e2ddd7;
+
+
+  /* ── TYPOGRAPHY ──────────────────────────────────────────── */
+
+  /* Body font — clean sans-serif for readability */
+  --font-body:    'Inter', system-ui, -apple-system, sans-serif;
+
+  /* Display font — Noto Serif SC has Chinese characters, adds cultural flavour
+     to headings like section titles and the logo */
+  --font-display: 'Noto Serif SC', serif;
+
+
+  /* ── SPACING ─────────────────────────────────────────────── */
+
+  /* Consistent gap sizes — use these instead of arbitrary pixel values */
+  --gap-xs:   0.25rem;   /*  4px */
+  --gap-sm:   0.5rem;    /*  8px */
+  --gap-md:   1rem;      /* 16px */
+  --gap-lg:   1.5rem;    /* 24px */
+  --gap-xl:   2rem;      /* 32px */
+
+
+  /* ── SHAPE & SHADOW ──────────────────────────────────────── */
+
+  /* Border radius for cards, buttons, inputs */
+  --radius:     8px;
+  --radius-sm:  4px;
+  --radius-pill: 20px;   /* fully rounded — used for tags and search bar */
+
+  /* Subtle shadow for cards on hover */
+  --shadow-card: 0 8px 24px rgba(0, 0, 0, 0.1);
+
+
+  /* ── LAYOUT ──────────────────────────────────────────────── */
+
+  /* Height of the sticky navigation bar */
+  --nav-h: 60px;
+
+  /* Maximum width of the main content area */
+  --container-max: 1100px;
+
+}

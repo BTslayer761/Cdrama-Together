@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DramaList — Your Chinese Drama Tracker</title>
+
+  <!-- Google Fonts: Noto Serif SC for Chinese-style headings, Inter for body text -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Our CSS files, loaded in this order:
+       1. variables.css  → design tokens (colours, fonts, sizes)
+       2. base.css       → resets and global element styles
+       3. components.css → reusable UI pieces (cards, buttons, badges)
+       4. layout.css     → nav, hero, grid, sidebar, footer -->
+  <link rel="stylesheet" href="css/variables.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════
+       NAVIGATION BAR
+       Defined in: css/layout.css (.nav-*)
+  ══════════════════════════════════════ -->
+  <nav class="nav">
+    <a class="nav-logo" href="index.html">Drama<span>List</span></a>
+
+    <ul class="nav-links">
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="pages/browse.html">Browse</a></li>
+      <li><a href="pages/seasonal.html">Seasonal</a></li>
+      <li><a href="pages/top-rated.html">Top Rated</a></li>
+      <li><a href="pages/my-list.html">My List</a></li>
+    </ul>
+
+    <div class="nav-right">
+      <div class="search-bar">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="nav-search" placeholder="Search dramas…" />
+      </div>
+      <a href="pages/login.html" class="btn btn-ghost">Log in</a>
+      <a href="pages/register.html" class="btn btn-primary">Sign up</a>
+    </div>
+  </nav>
+
+  <!-- ══════════════════════════════════════
+       HERO SECTION
+       The big banner at the top of the homepage
+       Defined in: css/layout.css (.hero-*)
+  ══════════════════════════════════════ -->
+  <section class="hero">
+    <!-- Small uppercase label above the headline -->
+    <p class="hero-eyebrow">Track · Rate · Discover</p>
+
+    <!-- Main headline. The <em> tag is styled red/gold (not italic) -->
+    <h1>Your home for <em>Chinese drama</em></h1>
+
+    <p>Track what you're watching, discover hidden gems, and connect with fans who share your taste.</p>
+
+    <!-- Call-to-action buttons -->
+    <div class="hero-cta">
+      <a href="pages/register.html" class="btn btn-primary btn-lg">Get started — it's free</a>
+      <a href="pages/browse.html" class="btn btn-outline-light btn-lg">Browse dramas</a>
+    </div>
+
+    <!-- Site-wide stats row at the bottom of the hero -->
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-val">12,400+</div>
+        <div class="hero-stat-label">Dramas catalogued</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-val">89K</div>
+        <div class="hero-stat-label">Active users</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-val">2.1M</div>
+        <div class="hero-stat-label">Ratings logged</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       MAIN CONTENT AREA
+       Two-column grid: main content + sidebar
+       Defined in: css/layout.css (.main-grid)
+  ══════════════════════════════════════ -->
+  <div class="container">
+    <div class="main-grid">
+
+      <!-- ── LEFT: Main Content ── -->
+      <main>
+
+        <!-- Section: Currently Airing -->
+        <div class="section-head">
+          <h2>Currently Airing</h2>
+          <a href="pages/browse.html?status=airing">See all →</a>
+        </div>
+
+        <!-- Filter tabs to narrow the grid by genre.
+             The active tab is highlighted; JS handles switching. -->
+        <div class="filter-tabs" id="filter-tabs">
+          <button class="filter-tab active" data-genre="all">All</button>
+          <button class="filter-tab" data-genre="Romance">Romance</button>
+          <button class="filter-tab" data-genre="Wuxia">Wuxia</button>
+          <button class="filter-tab" data-genre="Modern">Modern</button>
+          <button class="filter-tab" data-genre="Historical">Historical</button>
+          <button class="filter-tab" data-genre="Thriller">Thriller</button>
+        </div>
+
+        <!-- Drama cards are injected here by js/dramas.js -->
+        <div class="drama-grid" id="airing-grid"></div>
+
+        <!-- Section: Top Rated -->
+        <div class="section-head" style="margin-top: 2.5rem;">
+          <h2>Top Rated All Time</h2>
+          <a href="pages/top-rated.html">Full rankings →</a>
+        </div>
+
+        <!-- Top-rated cards are injected here by js/dramas.js -->
+        <div class="drama-grid" id="top-rated-grid"></div>
+
+      </main>
+
+      <!-- ── RIGHT: Sidebar ── -->
+      <aside class="sidebar">
+
+        <!-- Widget: My List summary -->
+        <div class="widget">
+          <div class="widget-title">My List</div>
+
+          <!-- Each row shows a status category + count.
+               The coloured dot is set via inline style here for simplicity. -->
+          <div class="list-status-rows">
+            <div class="list-status-row">
+              <div class="list-status-dot" style="background: var(--red);"></div>
+              <span class="list-status-label">Watching</span>
+              <span class="list-status-count" id="count-watching">4</span>
+            </div>
+            <div class="list-status-row">
+              <div class="list-status-dot" style="background: #5a9c5a;"></div>
+              <span class="list-status-label">Completed</span>
+              <span class="list-status-count" id="count-completed">31</span>
+            </div>
+            <div class="list-status-row">
+              <div class="list-status-dot" style="background: #888;"></div>
+              <span class="list-status-label">Plan to Watch</span>
+              <span class="list-status-count" id="count-ptw">18</span>
+            </div>
+            <div class="list-status-row">
+              <div class="list-status-dot" style="background: var(--gold);"></div>
+              <span class="list-status-label">On Hold</span>
+              <span class="list-status-count" id="count-hold">3</span>
+            </div>
+            <div class="list-status-row">
+              <div class="list-status-dot" style="background: #bbb;"></div>
+              <span class="list-status-label">Dropped</span>
+              <span class="list-status-count" id="count-dropped">7</span>
+            </div>
+          </div>
+
+          <div class="widget-footer">
+            <a href="pages/my-list.html" class="btn btn-primary btn-block">Open My List</a>
+          </div>
+        </div>
+
+        <!-- Widget: Genre cloud — clickable genre tags -->
+        <div class="widget">
+          <div class="widget-title">Browse by Genre</div>
+          <!-- Genre tags are injected here by js/ui.js -->
+          <div class="genre-cloud" id="genre-cloud"></div>
+        </div>
+
+        <!-- Widget: This season's top picks with score bars -->
+        <div class="widget">
+          <div class="widget-title">Summer 2025 — Top Picks</div>
+          <!-- Season bars are injected here by js/ui.js -->
+          <div class="season-bar-list" id="season-bars"></div>
+        </div>
+
+        <!-- Widget: Live community activity feed -->
+        <div class="widget">
+          <div class="widget-title">Community Activity</div>
+          <!-- Activity items are injected here by js/ui.js -->
+          <div class="activity-list" id="activity-feed"></div>
+        </div>
+
+      </aside>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       FOOTER
+       Defined in: css/layout.css (footer)
+  ══════════════════════════════════════ -->
+  <footer>
+    <p>DramaList &copy; 2025 &nbsp;·&nbsp;
+      <a href="pages/about.html">About</a> &nbsp;·&nbsp;
+      <a href="#">API</a> &nbsp;·&nbsp;
+      <a href="#">Privacy</a> &nbsp;·&nbsp;
+      <a href="#">Contact</a>
+    </p>
+  </footer>
+
+  <!-- ══════════════════════════════════════
+       JAVASCRIPT — loaded at the bottom so
+       the HTML is parsed before the scripts run.
+       Order matters:
+         1. data.js   → defines the raw drama data arrays
+         2. dramas.js → uses data to render drama cards
+         3. ui.js     → renders sidebar widgets and handles interactions
+  ══════════════════════════════════════ -->
+  <script src="js/data.js"></script>
+  <script src="js/dramas.js"></script>
+  <script src="js/ui.js"></script>
+
+</body>
+</html>
