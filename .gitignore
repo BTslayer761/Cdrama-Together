@@ -8,3 +8,6 @@ Thumbs.db
 
 # Node (if added later)
 node_modules/
+
+# API keys — never commit real credentials
+JS/config.js

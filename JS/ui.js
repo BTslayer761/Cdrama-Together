@@ -57,32 +57,26 @@ function renderGenreCloud() {
 
 
 /**
- * renderSeasonBars()
- * ───────────────────
- * Builds the horizontal score bar chart in the "Summer 2025 — Top Picks"
- * sidebar widget. Each bar's width is a percentage of the max score (10).
+ * renderSeasonBars(dramas)
+ * ─────────────────────────
+ * Builds the horizontal score bar chart in the "Top Picks" sidebar widget.
+ * Accepts the dramas array directly so it works with async-fetched data.
  */
-function renderSeasonBars() {
+function renderSeasonBars(dramas) {
   const container = document.getElementById('season-bars');
   if (!container) return;
 
-  const MAX_SCORE = 10;  // scores are out of 10
+  const MAX_SCORE = 10;
 
-  const html = SEASON_DRAMAS.map(function(drama) {
-    // Calculate the bar width as a percentage
-    // e.g. score 8.4 / 10 * 100 = 84%
+  const html = dramas.map(function(drama) {
     const widthPercent = (drama.score / MAX_SCORE) * 100;
-
     return `
       <div class="season-bar-row">
-        <!-- Label row: title on left, score on right -->
         <div class="season-bar-labels">
           <span class="season-bar-name">${drama.title}</span>
           <span class="season-bar-score">${drama.score}</span>
         </div>
-        <!-- Bar track + fill -->
         <div class="season-bar-track">
-          <!-- Width set inline — CSS can't read JS variables any other way here -->
           <div class="season-bar-fill" style="width: ${widthPercent}%"></div>
         </div>
       </div>
@@ -168,6 +162,11 @@ function initSearch() {
 // ══════════════════════════════════════════════════════════════
 
 renderGenreCloud();
-renderSeasonBars();
 renderActivityFeed();
 initSearch();
+
+// Fetch live season data from TMDB then render the sidebar bars
+fetchSeasonDramas().then(renderSeasonBars).catch(function() {
+  const el = document.getElementById('season-bars');
+  if (el) el.innerHTML = '<p style="color:var(--ink-3);font-size:0.8rem">Could not load.</p>';
+});

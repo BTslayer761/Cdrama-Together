@@ -1,243 +1,174 @@
 /**
  * js/data.js
  * ─────────────────────────────────────────────────────────────
- * DATA LAYER — all the content/data the site needs to render.
+ * DATA LAYER — fetches live drama data from the TMDB API.
  *
- * WHY SEPARATE THIS?
- *   Keeping data in its own file means:
- *   1. You can swap it out for a real API call later without
- *      touching any of the rendering logic.
- *   2. It's easy to find and edit the content without scrolling
- *      through UI code.
+ * DEPENDS ON: js/config.js (TMDB_API_KEY, TMDB_BASE, TMDB_IMG)
  *
- * FUTURE UPGRADE:
- *   Right now these are just JavaScript arrays defined directly
- *   in this file. Later you would replace them with fetch() calls
- *   to a backend API, e.g.:
- *     const dramas = await fetch('/api/dramas').then(r => r.json());
+ * Exports (as global async functions):
+ *   fetchAiringDramas()  → recently aired Chinese dramas
+ *   fetchTopRatedDramas() → highest-rated Chinese dramas
+ *   fetchSeasonDramas()  → popular dramas for the sidebar widget
  *
- * NOTE ON `const`:
- *   const means the variable can't be reassigned, but arrays and
- *   objects declared with const can still have their contents changed.
+ * Static data (GENRES, ACTIVITY_FEED) stays here as plain arrays.
  * ─────────────────────────────────────────────────────────────
  */
 
 
-/**
- * AIRING_DRAMAS
- * Currently airing or recently completed dramas shown on the homepage.
- *
- * Each drama object has these fields:
- *   id       — unique number, used as a key when rendering
- *   title    — English title
- *   year     — year it started airing
- *   eps      — total episode count
- *   status   — "airing" or "completed"
- *   genre    — primary genre tag (used for filter tabs)
- *   score    — community score out of 10
- *   char     — a Chinese character used as the poster placeholder
- *   watching — whether the current user is watching (hardcoded for now;
- *              later this would come from the user's saved list)
- */
-const AIRING_DRAMAS = [
-  {
-    id: 1,
-    title: "Love You Seven Times",
-    year: 2024,
-    eps: 40,
-    status: "airing",
-    genre: "Xianxia",
-    score: 8.4,
-    char: "七",
-    watching: false,
-  },
-  {
-    id: 2,
-    title: "The Longest Promise",
-    year: 2023,
-    eps: 40,
-    status: "completed",
-    genre: "Wuxia",
-    score: 9.0,
-    char: "诺",
-    watching: true,
-  },
-  {
-    id: 3,
-    title: "Hidden Love",
-    year: 2023,
-    eps: 25,
-    status: "completed",
-    genre: "Romance",
-    score: 8.7,
-    char: "暗",
-    watching: false,
-  },
-  {
-    id: 4,
-    title: "Nirvana in Fire",
-    year: 2015,
-    eps: 54,
-    status: "completed",
-    genre: "Historical",
-    score: 9.5,
-    char: "琅",
-    watching: false,
-  },
-  {
-    id: 5,
-    title: "Who Rules the World",
-    year: 2022,
-    eps: 36,
-    status: "completed",
-    genre: "Wuxia",
-    score: 8.1,
-    char: "主",
-    watching: false,
-  },
-  {
-    id: 6,
-    title: "Ashes of Love",
-    year: 2018,
-    eps: 63,
-    status: "completed",
-    genre: "Xianxia",
-    score: 8.9,
-    char: "香",
-    watching: true,
-  },
-];
+// Maps TMDB's numeric genre IDs to readable labels.
+// Full list: https://developer.themoviedb.org/reference/genre-tv-list
+const TMDB_GENRE_MAP = {
+  10759: 'Action',
+  16:    'Animation',
+  35:    'Comedy',
+  80:    'Crime',
+  18:    'Drama',
+  10751: 'Family',
+  9648:  'Mystery',
+  10765: 'Fantasy',
+  10768: 'War & Politics',
+  37:    'Western',
+};
 
 
 /**
- * TOP_RATED_DRAMAS
- * All-time highly rated dramas shown in the second section.
- * Same shape as AIRING_DRAMAS.
+ * normalizeTmdbShow(show, statusOverride)
+ * ────────────────────────────────────────
+ * Converts a raw TMDB TV result into the drama object shape
+ * the rest of the app expects.
  */
-const TOP_RATED_DRAMAS = [
-  {
-    id: 101,
-    title: "Story of Minglan",
-    year: 2018,
-    eps: 73,
-    status: "completed",
-    genre: "Historical",
-    score: 9.3,
-    char: "明",
-    watching: false,
-  },
-  {
-    id: 102,
-    title: "The Bad Kids",
-    year: 2020,
-    eps: 12,
-    status: "completed",
-    genre: "Thriller",
-    score: 9.4,
-    char: "坏",
-    watching: false,
-  },
-  {
-    id: 103,
-    title: "Go Ahead",
-    year: 2020,
-    eps: 46,
-    status: "completed",
-    genre: "Family",
-    score: 9.1,
-    char: "以",
-    watching: false,
-  },
-  {
-    id: 104,
-    title: "Love Like the Galaxy",
-    year: 2022,
-    eps: 56,
-    status: "completed",
-    genre: "Romance",
-    score: 9.0,
-    char: "星",
-    watching: false,
-  },
-];
+function normalizeTmdbShow(show, statusOverride) {
+  const genreId = show.genre_ids && show.genre_ids[0];
+  return {
+    id:        show.id,
+    title:     show.name,
+    year:      show.first_air_date ? show.first_air_date.split('-')[0] : '—',
+    eps:       null,
+    status:    statusOverride || 'completed',
+    genre:     TMDB_GENRE_MAP[genreId] || 'Drama',
+    score:     show.vote_average ? Math.round(show.vote_average * 10) / 10 : '—',
+    posterUrl: show.poster_path ? `${TMDB_IMG}${show.poster_path}` : null,
+    watching:  false,
+  };
+}
 
 
 /**
- * SEASON_DRAMAS
- * Dramas featured in the "Summer 2025 — Top Picks" sidebar widget.
- * Simpler shape — we only need title and score for the bar chart.
+ * fetchAiringDramas()
+ * ────────────────────
+ * Returns Chinese dramas that first aired within the last 12 months,
+ * sorted by newest first.
  */
-const SEASON_DRAMAS = [
-  { title: "Love You Seven Times",    score: 8.4 },
-  { title: "Fox Spirit Matchmaker",   score: 7.9 },
-  { title: "Blossoms in Adversity",   score: 8.1 },
-  { title: "The Substitute Princess", score: 7.6 },
-];
+async function fetchAiringDramas() {
+  const today       = new Date().toISOString().split('T')[0];
+  const oneYearAgo  = new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+  const url = `${TMDB_BASE}/discover/tv`
+    + `?api_key=${TMDB_API_KEY}`
+    + `&with_original_language=zh`
+    + `&with_origin_country=CN`
+    + `&sort_by=first_air_date.desc`
+    + `&first_air_date.lte=${today}`
+    + `&first_air_date.gte=${oneYearAgo}`
+    + `&vote_count.gte=5`;
+
+  const res  = await fetch(url);
+  const data = await res.json();
+  return (data.results || []).map(show => normalizeTmdbShow(show, 'airing'));
+}
 
 
 /**
- * GENRES
- * All genre tags shown in the sidebar "Browse by Genre" widget.
- * These are also used as filter values for the filter tabs.
+ * fetchTopRatedDramas()
+ * ──────────────────────
+ * Returns the highest-rated Chinese dramas of all time,
+ * requiring at least 100 votes so obscure titles don't skew results.
  */
+async function fetchTopRatedDramas() {
+  const url = `${TMDB_BASE}/discover/tv`
+    + `?api_key=${TMDB_API_KEY}`
+    + `&with_original_language=zh`
+    + `&with_origin_country=CN`
+    + `&sort_by=vote_average.desc`
+    + `&vote_count.gte=100`;
+
+  const res  = await fetch(url);
+  const data = await res.json();
+  return (data.results || []).slice(0, 8).map(show => normalizeTmdbShow(show, 'completed'));
+}
+
+
+/**
+ * fetchSeasonDramas()
+ * ────────────────────
+ * Returns the 4 most popular Chinese dramas right now,
+ * used for the "Top Picks" sidebar widget.
+ */
+async function fetchSeasonDramas() {
+  const url = `${TMDB_BASE}/discover/tv`
+    + `?api_key=${TMDB_API_KEY}`
+    + `&with_original_language=zh`
+    + `&with_origin_country=CN`
+    + `&sort_by=popularity.desc`
+    + `&vote_count.gte=5`;
+
+  const res  = await fetch(url);
+  const data = await res.json();
+  return (data.results || []).slice(0, 4).map(show => ({
+    title: show.name,
+    score: show.vote_average ? Math.round(show.vote_average * 10) / 10 : 0,
+  }));
+}
+
+
+// ── Static data ───────────────────────────────────────────────
+// These don't come from TMDB so they stay as plain arrays.
+
 const GENRES = [
-  "Romance",
-  "Wuxia",
-  "Xianxia",
-  "Historical",
-  "Crime",
-  "Comedy",
-  "Family",
-  "Mystery",
-  "Sci-Fi",
-  "School Life",
-  "Idol",
-  "Military",
+  'Drama',
+  'Romance',
+  'Action',
+  'Comedy',
+  'Mystery',
+  'Fantasy',
+  'Crime',
+  'Family',
+  'War & Politics',
+  'Thriller',
+  'Historical',
+  'Sci-Fi',
 ];
 
-
-/**
- * ACTIVITY_FEED
- * Mock community activity shown in the sidebar.
- *
- * Fields:
- *   initials — 2-letter abbreviation for the avatar circle
- *   user     — display name
- *   action   — what they did (plain text for now; could be an enum later)
- *   drama    — which drama they interacted with
- *   time     — how long ago (static string; later: real timestamps)
- */
 const ACTIVITY_FEED = [
   {
-    initials: "YL",
-    user: "YunLan",
-    action: "rated",
-    drama: "The Story of Minglan",
-    detail: "★9.2",
-    time: "2 minutes ago",
+    initials: 'YL',
+    user:     'YunLan',
+    action:   'rated',
+    drama:    'The Story of Minglan',
+    detail:   '★9.2',
+    time:     '2 minutes ago',
   },
   {
-    initials: "SS",
-    user: "StarSienna",
-    action: "started watching",
-    drama: "Nirvana in Fire",
-    detail: null,
-    time: "14 minutes ago",
+    initials: 'SS',
+    user:     'StarSienna',
+    action:   'started watching',
+    drama:    'Nirvana in Fire',
+    detail:   null,
+    time:     '14 minutes ago',
   },
   {
-    initials: "XH",
-    user: "XiaoHu",
-    action: "added a review for",
-    drama: "Love Like the Galaxy",
-    detail: null,
-    time: "32 minutes ago",
+    initials: 'XH',
+    user:     'XiaoHu',
+    action:   'added a review for',
+    drama:    'Love Like the Galaxy',
+    detail:   null,
+    time:     '32 minutes ago',
   },
   {
-    initials: "DR",
-    user: "DramaRain",
-    action: "completed",
-    drama: "Go Ahead",
-    detail: null,
-    time: "1 hour ago",
+    initials: 'DR',
+    user:     'DramaRain',
+    action:   'completed',
+    drama:    'Go Ahead',
+    detail:   null,
+    time:     '1 hour ago',
   },
 ];

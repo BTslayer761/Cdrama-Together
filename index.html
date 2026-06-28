@@ -100,16 +100,9 @@
           <a href="pages/browse.html?status=airing">See all →</a>
         </div>
 
-        <!-- Filter tabs to narrow the grid by genre.
-             The active tab is highlighted; JS handles switching. -->
-        <div class="filter-tabs" id="filter-tabs">
-          <button class="filter-tab active" data-genre="all">All</button>
-          <button class="filter-tab" data-genre="Romance">Romance</button>
-          <button class="filter-tab" data-genre="Wuxia">Wuxia</button>
-          <button class="filter-tab" data-genre="Modern">Modern</button>
-          <button class="filter-tab" data-genre="Historical">Historical</button>
-          <button class="filter-tab" data-genre="Thriller">Thriller</button>
-        </div>
+        <!-- Filter tabs are built dynamically by js/dramas.js
+             based on the genres returned from TMDB. -->
+        <div class="filter-tabs" id="filter-tabs"></div>
 
         <!-- Drama cards are injected here by js/dramas.js -->
         <div class="drama-grid" id="airing-grid"></div>
@@ -213,9 +206,10 @@
          2. dramas.js → uses data to render drama cards
          3. ui.js     → renders sidebar widgets and handles interactions
   ══════════════════════════════════════ -->
-  <script src="js/data.js"></script>
-  <script src="js/dramas.js"></script>
-  <script src="js/ui.js"></script>
+  <script src="JS/config.js"></script>
+  <script src="JS/data.js"></script>
+  <script src="JS/dramas.js"></script>
+  <script src="JS/ui.js"></script>
 
 </body>
 </html>
