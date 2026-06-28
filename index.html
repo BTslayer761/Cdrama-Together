@@ -41,8 +41,10 @@
         <span class="search-icon">🔍</span>
         <input type="text" id="nav-search" placeholder="Search dramas…" />
       </div>
-      <a href="pages/login.html" class="btn btn-ghost">Log in</a>
-      <a href="pages/register.html" class="btn btn-primary">Sign up</a>
+      <div id="nav-auth">
+        <a href="pages/login.html" class="btn btn-ghost">Log in</a>
+        <a href="pages/register.html" class="btn btn-primary">Sign up</a>
+      </div>
     </div>
   </nav>
 
@@ -206,10 +208,15 @@
          2. dramas.js → uses data to render drama cards
          3. ui.js     → renders sidebar widgets and handles interactions
   ══════════════════════════════════════ -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="JS/config.js"></script>
+  <script src="JS/supabase-client.js"></script>
+  <script src="JS/auth.js"></script>
+  <script src="JS/modal.js"></script>
   <script src="JS/data.js"></script>
   <script src="JS/dramas.js"></script>
   <script src="JS/ui.js"></script>
+  <script>updateNavAuth();</script>
 
 </body>
 </html>
