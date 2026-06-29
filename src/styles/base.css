@@ -1,0 +1,143 @@
+/*
+ * css/base.css
+ * ─────────────────────────────────────────────────────────────
+ * BASE STYLES — global resets and default element styling.
+ *
+ * WHY WE NEED RESETS:
+ *   Every browser has its own default stylesheet (e.g. Chrome adds
+ *   margin to <h1>, Firefox styles <button> differently). Resets
+ *   remove those differences so we start from a consistent baseline
+ *   across all browsers.
+ *
+ * RULE OF THUMB:
+ *   This file styles raw HTML elements (body, a, h1–h6, button…).
+ *   Named classes (.card, .btn, …) belong in components.css or layout.css.
+ * ─────────────────────────────────────────────────────────────
+ */
+
+
+/* ── UNIVERSAL RESET ─────────────────────────────────────── */
+
+/*
+ * box-sizing: border-box
+ *   By default, CSS adds padding and border ON TOP of the declared width.
+ *   e.g. a div with width:200px + padding:20px would actually be 240px wide.
+ *   border-box changes this: padding and border are INCLUDED in the width,
+ *   so width:200px always means exactly 200px. Much easier to reason about.
+ *
+ * margin: 0; padding: 0;
+ *   Remove all browser default spacing so we control every gap ourselves.
+ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+
+/* ── BODY ────────────────────────────────────────────────── */
+
+body {
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.6;               /* comfortable reading — 1.6× the font size */
+  color: var(--ink);
+  background: var(--surface-1);
+  min-height: 100vh;              /* at minimum fills the full viewport height */
+}
+
+
+/* ── HEADINGS ────────────────────────────────────────────── */
+
+/*
+ * We reset headings to look like normal text, then
+ * style them individually where needed (section-head h2, hero h1, etc.)
+ * This prevents unexpected jumbo text appearing in places we didn't intend.
+ */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--ink);
+}
+
+
+/* ── LINKS ───────────────────────────────────────────────── */
+
+/*
+ * Remove the default blue underline from links.
+ * Individual link styles are added per-component.
+ */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+
+/* ── LISTS ───────────────────────────────────────────────── */
+
+/*
+ * <ul> and <ol> have default bullet points and indentation.
+ * We remove them here; navigation menus and lists are styled separately.
+ */
+ul, ol {
+  list-style: none;
+}
+
+
+/* ── IMAGES ──────────────────────────────────────────────── */
+
+/*
+ * display: block — removes the small gap that appears below inline images.
+ * max-width: 100% — prevents images from overflowing their container.
+ */
+img {
+  display: block;
+  max-width: 100%;
+}
+
+
+/* ── BUTTONS ─────────────────────────────────────────────── */
+
+/*
+ * Browsers style buttons with their own font, border, and background.
+ * We inherit the page font and remove default browser styling here.
+ * Our .btn class in components.css adds the visual design.
+ */
+button {
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+}
+
+
+/* ── INPUTS ──────────────────────────────────────────────── */
+
+input {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+/* Remove the default blue glow outline on focus (we add our own later) */
+input:focus {
+  outline: none;
+}
+
+
+/* ── UTILITY CLASSES ─────────────────────────────────────── */
+
+/*
+ * Small helpers used throughout the HTML.
+ * Utility classes do one thing and are named after what they do.
+ */
+
+/* .sr-only — visually hidden but readable by screen readers (accessibility) */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}

@@ -6,8 +6,9 @@ Thumbs.db
 .vscode/
 .idea/
 
-# Node (if added later)
+# Node
 node_modules/
+dist/
 
 # API keys — never commit real credentials
 JS/config.js
