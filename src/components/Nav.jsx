@@ -37,7 +37,7 @@ export default function Nav() {
 
       <ul className="nav-links">
         <li><Link to="/home" className={isActive('/home')}>Home</Link></li>
-        <li><a href="#">Browse</a></li>
+        <li><Link to="/browse" className={isActive('/browse')}>Browse</Link></li>
         <li><a href="#">Seasonal</a></li>
         <li><a href="#">Top Rated</a></li>
         <li><Link to="/my-list" className={isActive('/my-list')}>My List</Link></li>

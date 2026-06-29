@@ -92,6 +92,21 @@
    Usage: injected by js/dramas.js into .drama-grid containers
    ════════════════════════════════════════════════════════════ */
 
+.drama-card-poster-link {
+  display: block;
+  text-decoration: none;
+}
+
+.drama-card-title-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.drama-card-title-link:hover .drama-card-title {
+  color: var(--red);
+}
+
 /* The card wrapper — a link that looks like a tile */
 .drama-card {
   background: var(--surface);

@@ -1,0 +1,241 @@
+.browse-page {
+  min-height: 100vh;
+  padding-top: var(--nav-h);
+  background: var(--surface-1);
+}
+
+/* ── Search bar ── */
+.browse-search-wrap {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 1.1rem 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+.browse-search-box {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  display: flex;
+  align-items: center;
+}
+
+.browse-search-icon {
+  position: absolute;
+  left: 0.85rem;
+  pointer-events: none;
+  font-size: 0.95rem;
+}
+
+.browse-search-input {
+  width: 100%;
+  padding: 0.6rem 2.4rem 0.6rem 2.4rem;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  color: var(--ink);
+  font-size: 0.9rem;
+  font-family: var(--font-body);
+  outline: none;
+  transition: border-color 0.15s;
+  box-sizing: border-box;
+}
+
+.browse-search-input:focus {
+  border-color: var(--red);
+}
+
+.browse-search-clear {
+  position: absolute;
+  right: 0.8rem;
+  background: none;
+  border: none;
+  color: var(--ink-3);
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 0;
+  line-height: 1;
+}
+
+/* ── Genre tabs ── */
+.browse-genre-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem;
+  padding: 0.75rem 1.5rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+/* ── Advanced filter toggle ── */
+.browse-adv-toggle-row {
+  padding: 0.65rem 1.5rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.browse-adv-toggle {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--ink-3);
+  padding: 0.35rem 0.9rem;
+  cursor: pointer;
+  font-size: 0.8125rem;
+  font-family: var(--font-body);
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.browse-adv-toggle:hover,
+.browse-adv-toggle.open {
+  border-color: var(--red);
+  color: var(--ink);
+}
+
+/* ── Advanced filter panel ── */
+.browse-adv-panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2.5rem;
+  padding: 1.25rem 1.5rem;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+}
+
+.browse-adv-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  min-width: 240px;
+}
+
+.browse-adv-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--ink-2);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.browse-adv-range-val {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  padding: 0.1rem 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.browse-adv-hint {
+  font-size: 0.75rem;
+  color: var(--ink-3);
+  margin: 0;
+}
+
+.browse-range-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.browse-range-row input[type="range"] {
+  flex: 1;
+  accent-color: var(--red);
+  cursor: pointer;
+}
+
+.browse-range-label {
+  font-size: 0.72rem;
+  color: var(--ink-3);
+  flex-shrink: 0;
+}
+
+.browse-reset-link {
+  background: none;
+  border: none;
+  color: var(--red);
+  font-size: 0.78rem;
+  cursor: pointer;
+  padding: 0;
+  font-family: var(--font-body);
+  text-align: left;
+}
+
+.browse-reset-link:hover {
+  text-decoration: underline;
+}
+
+.browse-actor-row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.browse-actor-input {
+  flex: 1;
+  min-width: 160px;
+  padding: 0.45rem 0.75rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--ink);
+  font-size: 0.875rem;
+  font-family: var(--font-body);
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.browse-actor-input:focus {
+  border-color: var(--red);
+}
+
+/* ── Results area ── */
+.browse-results-bar {
+  display: flex;
+  align-items: center;
+  padding: 1.25rem 0 0.5rem;
+}
+
+.browse-results-count {
+  font-size: 0.8rem;
+  color: var(--ink-3);
+}
+
+.browse-empty {
+  color: var(--ink-3);
+  font-size: 0.875rem;
+  padding: 4rem 0;
+  text-align: center;
+}
+
+.browse-load-more {
+  display: flex;
+  justify-content: center;
+  padding: 2.5rem 0 4rem;
+}
+
+.btn-outline-browse {
+  background: transparent;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-pill);
+  color: var(--ink-2);
+  padding: 0.55rem 2.5rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-family: var(--font-body);
+  font-weight: 500;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.btn-outline-browse:hover:not(:disabled) {
+  border-color: var(--red);
+  color: var(--red);
+}
+
+.btn-outline-browse:disabled {
+  opacity: 0.5;
+  cursor: default;
+}

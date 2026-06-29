@@ -74,3 +74,119 @@ export async function fetchSeasonDramas() {
     score: show.vote_average ? Math.round(show.vote_average * 10) / 10 : 0,
   }))
 }
+
+export async function fetchBrowseDramas(page = 1) {
+  const url  = `${TMDB_BASE}/discover/tv?api_key=${TMDB_API_KEY}&with_original_language=zh&with_origin_country=CN&sort_by=popularity.desc&vote_count.gte=5&page=${page}`
+  const res  = await fetch(url)
+  const data = await res.json()
+  return {
+    results:    (data.results || []).map(s => normalizeTmdbShow(s)),
+    totalPages: data.total_pages || 1,
+  }
+}
+
+export async function fetchDramaDetails(id) {
+  const [detail, credits, videos] = await Promise.all([
+    fetch(`${TMDB_BASE}/tv/${id}?api_key=${TMDB_API_KEY}`).then(r => r.json()),
+    fetch(`${TMDB_BASE}/tv/${id}/credits?api_key=${TMDB_API_KEY}`).then(r => r.json()),
+    fetch(`${TMDB_BASE}/tv/${id}/videos?api_key=${TMDB_API_KEY}`).then(r => r.json()),
+  ])
+
+  const statusMap = {
+    'Returning Series': 'Ongoing',
+    'Ended':            'Completed',
+    'Canceled':         'Cancelled',
+    'In Production':    'In Production',
+    'Planned':          'Planned',
+  }
+
+  return {
+    id:            detail.id,
+    title:         detail.name,
+    originalTitle: detail.original_name,
+    overview:      detail.overview || 'No synopsis available.',
+    status:        statusMap[detail.status] || detail.status || 'Unknown',
+    firstAirDate:  detail.first_air_date || null,
+    episodes:      detail.number_of_episodes || null,
+    seasons:       detail.number_of_seasons  || null,
+    genres:        (detail.genres || []).map(g => g.name),
+    score:         detail.vote_average ? Math.round(detail.vote_average * 10) / 10 : null,
+    posterUrl:     detail.poster_path   ? `${TMDB_IMG}${detail.poster_path}` : null,
+    backdropUrl:   detail.backdrop_path ? `https://image.tmdb.org/t/p/original${detail.backdrop_path}` : null,
+    cast: (credits.cast || []).map(c => ({
+      id:           c.id,
+      name:         c.name,
+      originalName: c.original_name && c.original_name !== c.name ? c.original_name : null,
+      character:    c.character || '—',
+      profileUrl:   c.profile_path ? `https://image.tmdb.org/t/p/w185${c.profile_path}` : null,
+    })),
+    crew: (() => {
+      const KEY_JOBS = ['Director', 'Co-Director', 'Screenplay', 'Writer', 'Story',
+                        'Executive Producer', 'Producer', 'Co-Producer',
+                        'Original Music Composer', 'Music']
+      const seen = new Set()
+      return (credits.crew || [])
+        .filter(c => {
+          if (!KEY_JOBS.includes(c.job)) return false
+          const key = `${c.id}-${c.job}`
+          if (seen.has(key)) return false
+          seen.add(key)
+          return true
+        })
+        .map(c => ({
+          id:         c.id,
+          name:       c.name,
+          job:        c.job,
+          department: c.department,
+          profileUrl: c.profile_path ? `https://image.tmdb.org/t/p/w185${c.profile_path}` : null,
+        }))
+    })(),
+    videos: (videos.results || []).map(v => ({
+      key:  v.key,
+      name: v.name,
+      type: v.type,
+      site: v.site,
+    })),
+  }
+}
+
+export async function fetchEpisodeCounts(ids) {
+  const batches = []
+  for (let i = 0; i < ids.length; i += 10) batches.push(ids.slice(i, i + 10))
+  const all = {}
+  for (const batch of batches) {
+    const results = await Promise.all(
+      batch.map(id =>
+        fetch(`${TMDB_BASE}/tv/${id}?api_key=${TMDB_API_KEY}`)
+          .then(r => r.json())
+          .then(d => [id, d.number_of_episodes || null])
+          .catch(() => [id, null])
+      )
+    )
+    results.forEach(([id, count]) => { all[id] = count })
+  }
+  return all
+}
+
+export async function searchDramasByName(query) {
+  const url  = `${TMDB_BASE}/search/tv?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}`
+  const res  = await fetch(url)
+  const data = await res.json()
+  return (data.results || [])
+    .filter(s => s.original_language === 'zh')
+    .map(s => normalizeTmdbShow(s))
+}
+
+export async function searchDramasByActor(actorName) {
+  const personRes  = await fetch(`${TMDB_BASE}/search/person?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(actorName)}`)
+  const personData = await personRes.json()
+  if (!personData.results?.length) return []
+
+  const person      = personData.results[0]
+  const creditsRes  = await fetch(`${TMDB_BASE}/person/${person.id}/tv_credits?api_key=${TMDB_API_KEY}`)
+  const creditsData = await creditsRes.json()
+
+  return (creditsData.cast || [])
+    .filter(s => s.original_language === 'zh')
+    .map(s => normalizeTmdbShow(s))
+}

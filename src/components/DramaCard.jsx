@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { db } from '../services/supabase'
 import RatingModal from './RatingModal'
@@ -43,19 +43,23 @@ export default function DramaCard({ drama }) {
   return (
     <>
       <div className="drama-card" data-id={drama.id} data-genre={drama.genre}>
-        <div className="drama-card-poster">
-          {drama.posterUrl
-            ? <img src={drama.posterUrl} alt={drama.title} />
-            : <div className="drama-card-poster-placeholder">映</div>
-          }
-          {drama.status === 'airing'
-            ? <span className="drama-card-badge badge-airing">Airing</span>
-            : <span className="drama-card-badge badge-completed">Completed</span>
-          }
-          <div className="drama-card-score">★ {drama.score}</div>
-        </div>
+        <Link to={`/drama/${drama.id}`} className="drama-card-poster-link">
+          <div className="drama-card-poster">
+            {drama.posterUrl
+              ? <img src={drama.posterUrl} alt={drama.title} />
+              : <div className="drama-card-poster-placeholder">映</div>
+            }
+            {drama.status === 'airing'
+              ? <span className="drama-card-badge badge-airing">Airing</span>
+              : <span className="drama-card-badge badge-completed">Completed</span>
+            }
+            <div className="drama-card-score">★ {drama.score}</div>
+          </div>
+        </Link>
         <div className="drama-card-info">
-          <div className="drama-card-title">{drama.title}</div>
+          <Link to={`/drama/${drama.id}`} className="drama-card-title-link">
+            <div className="drama-card-title">{drama.title}</div>
+          </Link>
           <div className="drama-card-meta">{drama.year} · {drama.genre} · {epsMeta}</div>
           <div className="drama-card-actions">
             <select className={selectClass} value={status} onChange={handleChange}>
