@@ -4,8 +4,10 @@ import DramaCard from '../components/DramaCard'
 import { fetchBrowseDramas, fetchEpisodeCounts, searchDramasByName, searchDramasByActor } from '../services/tmdb'
 import '../styles/browse.css'
 
-const GENRES  = ['All', 'Action', 'Animation', 'Comedy', 'Crime', 'Drama', 'Family', 'Fantasy', 'Mystery', 'War & Politics', 'Western']
-const EP_MAX  = 200
+const GENRES   = ['All', 'Action', 'Animation', 'Comedy', 'Crime', 'Drama', 'Family', 'Fantasy', 'Mystery', 'War & Politics', 'Western']
+const EP_MAX   = 200
+const YEAR_MIN = 2000
+const YEAR_MAX = new Date().getFullYear()
 
 export default function Browse() {
   const [browseDramas, setBrowseDramas] = useState([])
@@ -28,7 +30,10 @@ export default function Browse() {
   const [actorResults, setActorResults] = useState(null)
   const [actorLoading, setActorLoading] = useState(false)
 
-  const epFilterActive = epRange[0] > 0 || epRange[1] < EP_MAX
+  const [yearRange, setYearRange] = useState([YEAR_MIN, YEAR_MAX])
+
+  const epFilterActive   = epRange[0] > 0 || epRange[1] < EP_MAX
+  const yearFilterActive = yearRange[0] > YEAR_MIN || yearRange[1] < YEAR_MAX
 
   // Load first 3 pages on mount
   useEffect(() => {
@@ -119,6 +124,13 @@ export default function Browse() {
       return count >= epRange[0] && count <= epRange[1]
     })
   }
+  if (yearFilterActive) {
+    displayed = displayed.filter(d => {
+      const y = parseInt(d.year)
+      if (isNaN(y)) return true
+      return y >= yearRange[0] && y <= yearRange[1]
+    })
+  }
 
   const showLoadMore = searchResults === null && actorResults === null && page < totalPages
 
@@ -201,6 +213,41 @@ export default function Browse() {
               {epFilterActive && (
                 <button className="browse-reset-link" onClick={() => setEpRange([0, EP_MAX])}>
                   Reset episode filter
+                </button>
+              )}
+            </div>
+
+            {/* Year range */}
+            <div className="browse-adv-group">
+              <div className="browse-adv-label">
+                Year
+                <span className="browse-adv-range-val">
+                  {yearRange[0]} – {yearRange[1]}
+                </span>
+              </div>
+              <div className="browse-range-row">
+                <span className="browse-range-label">From</span>
+                <input
+                  type="range" min={YEAR_MIN} max={YEAR_MAX} step={1}
+                  value={yearRange[0]}
+                  onChange={e => {
+                    const v = +e.target.value
+                    setYearRange([Math.min(v, yearRange[1] - 1), yearRange[1]])
+                  }}
+                />
+                <input
+                  type="range" min={YEAR_MIN} max={YEAR_MAX} step={1}
+                  value={yearRange[1]}
+                  onChange={e => {
+                    const v = +e.target.value
+                    setYearRange([yearRange[0], Math.max(v, yearRange[0] + 1)])
+                  }}
+                />
+                <span className="browse-range-label">To</span>
+              </div>
+              {yearFilterActive && (
+                <button className="browse-reset-link" onClick={() => setYearRange([YEAR_MIN, YEAR_MAX])}>
+                  Reset year filter
                 </button>
               )}
             </div>
